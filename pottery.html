@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAXIM DUGLIO - Pottery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">MAXIM DUGLIO</div>
+        <nav class="nav">
+            <a href="index.html">DRAWINGS</a>
+            <a href="photos.html">PHOTOS</a>
+            <a href="pottery.html" class="active">POTTERY</a>
+            <a href="mailto:maxim.duglio@gmail.com">CONTACT</a>
+        </nav>
+    </div>
+    
+    <div class="gallery" id="gallery"></div>
+    
+    <script>
+        const folder = 'pottery';
+        const gallery = document.getElementById('gallery');
+        
+        // Calculate column count based on viewport width
+        function getColumnCount() {
+            return window.innerWidth <= 768 ? 2 : 4;
+        }
+        
+        // Function to check if image exists
+        function imageExists(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+            });
+        }
+        
+        // Find total number of images in folder
+        async function getImageCount() {
+            let count = 1;
+            while (await imageExists(`media/${folder}/${count}.jpg`)) {
+                count++;
+            }
+            return count - 1;
+        }
+        
+        // Load and display gallery
+        async function loadGallery() {
+            const columnCount = getColumnCount();
+            const imageCount = await getImageCount();
+            
+            // Create columns
+            const columns = [];
+            for (let i = 0; i < columnCount; i++) {
+                const column = document.createElement('div');
+                column.className = 'column';
+                gallery.appendChild(column);
+                columns.push(column);
+            }
+            
+            // Distribute images across columns
+            for (let i = 1; i <= imageCount; i++) {
+                const img = document.createElement('img');
+                img.src = `media/${folder}/${i}.jpg`;
+                img.alt = 'Portfolio image';
+                
+                // Distribute to columns left-to-right
+                const columnIndex = (i - 1) % columnCount;
+                columns[columnIndex].appendChild(img);
+            }
+        }
+        
+        // Reload gallery on window resize
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                const newColumnCount = getColumnCount();
+                if ((window.innerWidth <= 768 && gallery.children.length !== 2) ||
+                    (window.innerWidth > 768 && gallery.children.length !== 4)) {
+                    gallery.innerHTML = '';
+                    loadGallery();
+                }
+            }, 250);
+        });
+        
+        // Initial load
+        loadGallery();
+    </script>
+</body>
+</html>
