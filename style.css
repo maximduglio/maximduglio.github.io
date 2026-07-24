@@ -83,6 +83,27 @@ body {
     object-fit: cover;
 }
 
+.video-gallery {
+    margin-left: 50px;
+    width: calc(100% - 50px);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.video-wrapper {
+    width: 100%;
+    max-width: 700px;
+}
+
+.video-wrapper video {
+    width: 100%;
+    height: auto;
+    display: block;
+    background-color: #000;
+}
+
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
@@ -114,5 +135,12 @@ body {
         margin-left: 0;
         margin-top: 50px;
         width: 100%;
+    }
+
+    .video-gallery {
+        margin-left: 0;
+        margin-top: 50px;
+        width: 100%;
+        padding: 10px;
     }
 }
