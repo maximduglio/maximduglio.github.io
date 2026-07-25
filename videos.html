@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAXIM DUGLIO - Videos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">MAXIM DUGLIO</div>
+        <nav class="nav">
+            <a href="index.html">DRAWINGS</a>
+            <a href="photos.html">PHOTOS</a>
+            <a href="pottery.html">POTTERY</a>
+            <a href="videos.html" class="active">VIDEOS</a>
+            <a href="mailto:maxim.duglio@gmail.com">CONTACT</a>
+        </nav>
+    </div>
+
+    <div class="video-gallery" id="video-gallery"></div>
+
+    <script>
+        const folder = 'videos';
+        const videoGallery = document.getElementById('video-gallery');
+
+        // Function to check if a video file exists and can load
+        function videoExists(url) {
+            return new Promise((resolve) => {
+                const video = document.createElement('video');
+                video.onloadedmetadata = () => resolve(true);
+                video.onerror = () => resolve(false);
+                video.src = url;
+            });
+        }
+
+        // Find total number of videos in folder (tries mp4 first, then mov)
+        async function findVideo(count) {
+            const extensions = ['mp4', 'mov', 'webm'];
+            for (const ext of extensions) {
+                const url = `media/${folder}/${count}.${ext}`;
+                if (await videoExists(url)) {
+                    return url;
+                }
+            }
+            return null;
+        }
+
+        async function loadGallery() {
+            let count = 1;
+            let url = await findVideo(count);
+
+            while (url) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'video-wrapper';
+
+                const video = document.createElement('video');
+                video.src = url;
+                video.controls = true;
+                video.preload = 'metadata';
+                video.playsInline = true;
+
+                wrapper.appendChild(video);
+                videoGallery.appendChild(wrapper);
+
+                count++;
+                url = await findVideo(count);
+            }
+        }
+
+        loadGallery();
+    </script>
+</body>
+</html>
