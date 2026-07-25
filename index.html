@@ -22,55 +22,58 @@
     <script>
         const folder = 'drawings';
         const gallery = document.getElementById('gallery');
-        
+
+        // Image list with intrinsic dimensions, so the browser can reserve
+        // space before each file arrives (no layout shift).
+        const images = [
+            [1209, 1600], [1242, 1600], [1225, 1600], [1028, 1600],
+            [1017, 1600], [1337, 1600], [1223, 1600], [1041, 1600],
+            [1231, 1600], [1041, 1600], [1042, 1600], [1232, 1600],
+            [1226, 1600], [1365, 978]
+        ];
+
         // Calculate column count based on viewport width
         function getColumnCount() {
             return window.innerWidth <= 768 ? 2 : 4;
         }
-        
-        // Function to check if image exists
-        function imageExists(url) {
-            return new Promise((resolve) => {
-                const img = new Image();
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-            });
-        }
-        
-        // Find total number of images in folder
-        async function getImageCount() {
-            let count = 1;
-            while (await imageExists(`media/${folder}/${count}.jpg`)) {
-                count++;
-            }
-            return count - 1;
-        }
-        
+
         // Load and display gallery
-        async function loadGallery() {
+        function loadGallery() {
             const columnCount = getColumnCount();
-            const imageCount = await getImageCount();
-            
-            // Create columns
+
+            // Create columns, tracking each one's height as a multiple of its
+            // width so mixed portrait/landscape images still pack evenly
             const columns = [];
+            const columnHeights = [];
             for (let i = 0; i < columnCount; i++) {
                 const column = document.createElement('div');
                 column.className = 'column';
                 gallery.appendChild(column);
                 columns.push(column);
+                columnHeights.push(0);
             }
-            
+
             // Distribute images across columns
-            for (let i = 1; i <= imageCount; i++) {
+            images.forEach(([width, height], index) => {
                 const img = document.createElement('img');
-                img.src = `media/${folder}/${i}.jpg`;
+                img.src = `media/${folder}/${index + 1}.jpg`;
                 img.alt = 'Portfolio image';
-                
-                // Distribute to columns left-to-right
-                const columnIndex = (i - 1) % columnCount;
+                img.width = width;
+                img.height = height;
+                img.decoding = 'async';
+
+                // First row is above the fold: fetch it immediately, lazy-load the rest
+                if (index < columnCount) {
+                    img.fetchPriority = 'high';
+                } else {
+                    img.loading = 'lazy';
+                }
+
+                // Always append to whichever column is currently shortest
+                const columnIndex = columnHeights.indexOf(Math.min(...columnHeights));
+                columnHeights[columnIndex] += height / width;
                 columns[columnIndex].appendChild(img);
-            }
+            });
         }
         
         // Reload gallery on window resize
