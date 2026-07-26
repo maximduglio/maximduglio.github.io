@@ -26,9 +26,31 @@
         // Image list with intrinsic dimensions, so the browser can reserve
         // space before each file arrives (no layout shift).
         const images = [
+            // Existing numbered photos
             [1034, 1600], [908, 1130], [1600, 1056], [1565, 1037],
             [1035, 1600], [1490, 818], [1402, 976], [1600, 1071],
-            [1600, 1071], [1600, 1060], [1600, 1060]
+            [1600, 1071], [1600, 1060], [1600, 1060],
+            // Named photos
+            [1200, 1600], [1200, 1600], [1600, 1200], [1200, 1600],
+            [1200, 1600], [1600, 1200], [1200, 1600], [1600, 1200],
+            [1200, 1600], [1200, 1600], [1200, 1600], [1600, 1200],
+            [1200, 1600], [1200, 1600], [1600, 1200], [1200, 1600],
+            [1200, 1600], [1600, 1200], [1200, 1600], [1200, 1600]
+        ];
+
+        // Image filenames
+        const imageFilenames = [
+            // Existing numbered photos
+            '1.jpg', '2.jpg', '3.jpg', '4.jpg',
+            '5.jpg', '6.jpg', '7.jpg', '8.jpg',
+            '9.jpg', '10.jpg', '11.jpg',
+            // Named photos
+            'building.jpg', 'decon.jpg', 'denamrk.jpg', 'escaltor.jpg',
+            'finger.JPG', 'grass.jpg', 'guy.jpg', 'henry.jpg',
+            'house.jpg', 'merchent.jpg', 'monarch.jpg', 'nailssprread.jpg',
+            'poster.jpg', 'rope.jpg', 'salvation.jpg', 'shado.JPG',
+            'shell.jpeg', 'sky.jpg', 'spred.jpg', 'sulpture.jpg',
+            'wood.jpg', 'zian.jpg'
         ];
 
         // Calculate column count based on viewport width
@@ -55,7 +77,7 @@
             // Distribute images across columns
             images.forEach(([width, height], index) => {
                 const img = document.createElement('img');
-                img.src = `media/${folder}/${index + 1}.jpg`;
+                img.src = `media/${folder}/${imageFilenames[index]}`;
                 img.alt = 'Portfolio image';
                 img.width = width;
                 img.height = height;
