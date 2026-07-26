@@ -23,33 +23,17 @@
         const folder = 'photos';
         const gallery = document.getElementById('gallery');
 
-        // Image list with intrinsic dimensions, so the browser can reserve
-        // space before each file arrives (no layout shift).
-        const images = [
-            // Existing numbered photos
-            [1034, 1600], [908, 1130], [1600, 1056], [1565, 1037],
-            [1035, 1600], [1490, 818], [1402, 976], [1600, 1071],
-            [1600, 1071], [1600, 1060], [1600, 1060],
-            // Named photos
-            [1200, 1600], [1200, 1600], [1600, 1200], [1200, 1600],
-            [1200, 1600], [1600, 1200], [1200, 1600], [1600, 1200],
-            [1200, 1600], [1200, 1600], [1200, 1600], [1600, 1200],
-            [1200, 1600], [1200, 1600], [1600, 1200], [1200, 1600],
-            [1200, 1600], [1600, 1200], [1200, 1600], [1200, 1600]
-        ];
-
-        // Image filenames
+        // Image filenames - all photos including numbered and named
         const imageFilenames = [
-            // Existing numbered photos
-            '1.jpg', '2.jpg', '3.jpg', '4.jpg',
-            '5.jpg', '6.jpg', '7.jpg', '8.jpg',
-            '9.jpg', '10.jpg', '11.jpg',
+            // Numbered photos
+            '1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg',
+            '9.jpg', '10.jpg', '11.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
+            '21.jpg', '22.jpg', '23.jpg',
             // Named photos
-            'building.jpg', 'decon.jpg', 'denamrk.jpg', 'escaltor.jpg',
-            'finger.JPG', 'grass.jpg', 'guy.jpg', 'henry.jpg',
-            'house.jpg', 'merchent.jpg', 'monarch.jpg', 'nailssprread.jpg',
-            'poster.jpg', 'rope.jpg', 'salvation.jpg', 'shado.JPG',
-            'shell.jpeg', 'sky.jpg', 'spred.jpg', 'sulpture.jpg',
+            'building.jpg', 'decon.jpg', 'denamrk.jpg', 'escaltor.jpg', 'finger.JPG',
+            'grass.jpg', 'guy.jpg', 'henry.jpg', 'house.jpg', 'merchent.jpg',
+            'monarch.jpg', 'nailssprread.jpg', 'poster.jpg', 'rope.jpg', 'salvation.jpg',
+            'shado.JPG', 'shell.jpeg', 'sky.jpg', 'spred.jpg', 'sulpture.jpg',
             'wood.jpg', 'zian.jpg'
         ];
 
@@ -62,8 +46,7 @@
         function loadGallery() {
             const columnCount = getColumnCount();
 
-            // Create columns, tracking each one's height as a multiple of its
-            // width so mixed portrait/landscape images still pack evenly
+            // Create columns
             const columns = [];
             const columnHeights = [];
             for (let i = 0; i < columnCount; i++) {
@@ -75,12 +58,10 @@
             }
 
             // Distribute images across columns
-            images.forEach(([width, height], index) => {
+            imageFilenames.forEach((filename, index) => {
                 const img = document.createElement('img');
-                img.src = `media/${folder}/${imageFilenames[index]}`;
+                img.src = `media/${folder}/${filename}`;
                 img.alt = 'Portfolio image';
-                img.width = width;
-                img.height = height;
                 img.decoding = 'async';
 
                 // First row is above the fold: fetch it immediately, lazy-load the rest
@@ -90,9 +71,16 @@
                     img.loading = 'lazy';
                 }
 
+                // Calculate aspect ratio when image loads
+                img.onload = function() {
+                    const aspectRatio = this.naturalHeight / this.naturalWidth;
+                    const columnIndex = columnHeights.indexOf(Math.min(...columnHeights));
+                    columnHeights[columnIndex] += aspectRatio;
+                };
+
                 // Always append to whichever column is currently shortest
                 const columnIndex = columnHeights.indexOf(Math.min(...columnHeights));
-                columnHeights[columnIndex] += height / width;
+                columnHeights[columnIndex] += 0.6; // Default aspect ratio for spacing calc
                 columns[columnIndex].appendChild(img);
             });
         }
