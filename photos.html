@@ -23,13 +23,11 @@
         const folder = 'photos';
         const gallery = document.getElementById('gallery');
 
-        // Image filenames - all photos including numbered and named
+        // Image filenames - all unique photos (duplicates removed)
         const imageFilenames = [
-            // Numbered photos
-            '1.jpg', '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg',
-            '9.jpg', '10.jpg', '11.jpg', '16.jpg', '17.jpg', '18.jpg', '19.jpg', '20.jpg',
-            '21.jpg', '22.jpg', '23.jpg',
-            // Named photos
+            // Numbered photos (unique ones only)
+            '2.jpg', '3.jpg', '4.jpg', '5.jpg', '6.jpg', '7.jpg', '8.jpg', '9.jpg', '10.jpg', '11.jpg', '22.jpg', '23.jpg',
+            // Named photos (no duplicates)
             'building.jpg', 'decon.jpg', 'denamrk.jpg', 'escaltor.jpg', 'finger.JPG',
             'grass.jpg', 'guy.jpg', 'henry.jpg', 'house.jpg', 'merchent.jpg',
             'monarch.jpg', 'nailssprread.jpg', 'poster.jpg', 'rope.jpg', 'salvation.jpg',
